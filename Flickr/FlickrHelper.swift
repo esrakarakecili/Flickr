@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import AFNetworking
 
 class FlickrHelper {
     
@@ -20,18 +19,19 @@ class FlickrHelper {
     }
     
     class func getPictures(perPage: Int, completion: () -> Void) {
-        let manager = AFHTTPSessionManager()
-    
-        manager.get(urlToGetRecentPictures(perPage: perPage),
-                    parameters: nil,
-                    progress: nil,
-                    success: { (operation, response) in
-                        if let dictionary = response as? [String: Any] {
-                            print(dictionary)
-                        }
-        }) { (operation, error) in
-            print("Error: \(error)")
-        }
+        guard let url = URL(string: urlToGetRecentPictures(perPage: 20)) else { return }
+        
+        URLSession.shared.dataTask(with: url) { (data, response, error) in
+            guard let data = data else { return }
+            do {
+            let json = try JSONDecoder().decode(RecentPhotos.self, from: data)
+            var backToString = String(data:
+                data, encoding: String.Encoding.utf8) as String!
+            print(json)
+            } catch let jsonError {
+                print(jsonError)
+            }
+        }.resume()
     }
 }
 

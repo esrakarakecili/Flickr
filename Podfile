@@ -6,7 +6,6 @@ target 'Flickr' do
   use_frameworks!
 
   # Pods for Flickr
-	pod 'AFNetworking', '~> 3.0'
 
   target 'FlickrTests' do
     inherit! :search_paths
