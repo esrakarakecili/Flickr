@@ -18,20 +18,20 @@ class FlickrHelper {
         return "https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=\(flickrAPIKey)&text=\(searchString)&per_page=\(perPage)&format=json&nojsoncallback=1"
     }
     
-    class func getPictures(perPage: Int, completion: () -> Void) {
+    class func getPictures(perPage: Int, completion: @escaping (_ photos: [Photo]) -> Void) {
         guard let url = URL(string: urlToGetRecentPictures(perPage: 20)) else { return }
         
         URLSession.shared.dataTask(with: url) { (data, response, error) in
             guard let data = data else { return }
             do {
-            let json = try JSONDecoder().decode(RecentPhotos.self, from: data)
-            var backToString = String(data:
-                data, encoding: String.Encoding.utf8) as String!
-            print(json)
+                let json = try JSONDecoder().decode(RecentPhotos.self, from: data)
+                print(json)
+                completion(json.photos?.photo ?? [])
+                
             } catch let jsonError {
                 print(jsonError)
             }
-        }.resume()
+            }.resume()
     }
 }
 
