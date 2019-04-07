@@ -9,9 +9,11 @@
 import UIKit
 
 class MainVC: UIViewController {
-
+    
     @IBOutlet weak var tableView: UITableView!
+    
     var list: [Photo] = []
+    var images: [Int:UIImage] = [:]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,7 +37,11 @@ extension MainVC: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 345
+        if let image = images[indexPath.row] {
+            return tableView.frame.width / getRatio(image: image)
+        } else {
+            return 132
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -46,9 +52,19 @@ extension MainVC: UITableViewDelegate, UITableViewDataSource {
         }
         
         let item = list[indexPath.row]
-        cell!.lblNameSurname.text = item.title
         
+        cell!.imgPic.imageFromUrl(FlickrHelper.generatePhotoUrl(id: item.id!, server: item.server!, secret: item.secret!, size: PhotoSize.medium), placeHolder: UIImage(named: "no_photo"), completion: { (downloadedImage) in
+            
+            self.images[indexPath.row] = downloadedImage
+            tableView.reloadRows(at: [indexPath], with: .automatic)
+        })
+        
+        cell!.lblNameSurname.text = item.title
         return cell!
+    }
+    
+    func getRatio(image: UIImage) -> CGFloat {
+        return CGFloat(image.size.width / image.size.height)
     }
     
 }

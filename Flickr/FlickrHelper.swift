@@ -15,7 +15,8 @@ class FlickrHelper {
     }
     
     class func urlToSearchPicture(searchString: String, perPage: Int) -> String {
-        return "https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=\(flickrAPIKey)&text=\(searchString)&per_page=\(perPage)&format=json&nojsoncallback=1"
+        let encodedSearchString = searchString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
+        return "https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=\(flickrAPIKey)&text=\(encodedSearchString)&per_page=\(perPage)&format=json&nojsoncallback=1"
     }
     
     class func getPictures(perPage: Int, completion: @escaping (_ photos: [Photo]) -> Void) {
@@ -32,6 +33,10 @@ class FlickrHelper {
                 print(jsonError)
             }
             }.resume()
+    }
+    
+    class func generatePhotoUrl(id: String, server: String, secret: String, size: PhotoSize) -> String {
+        return "https://live.staticflickr.com/\(server)/\(id)_\(secret)_\(getPhotoSize(size)).jpg"
     }
 }
 
