@@ -38,7 +38,7 @@ extension MainVC: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if let image = images[indexPath.row] {
-            return tableView.frame.width / getRatio(image: image)
+            return (tableView.frame.width / getRatio(image: image)) + 132
         } else {
             return 132
         }
